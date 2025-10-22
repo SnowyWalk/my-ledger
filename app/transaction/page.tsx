@@ -15,13 +15,15 @@ import { Button } from "@/components/ui/button";
 import { parseKoreanDate } from "@/lib/utils";
 
 export default function TransactionPage() {
-    const { data: transactions, isLoading } = useQuery({
+    const { data: transactions, isLoading, refetch } = useQuery({
         queryKey: ["transaction"],
         queryFn: async () => {
             const res = await fetch("/api/transaction", { cache: "no-store" });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return z.array(Transaction).parse(await res.json());
         },
+        select: (list) =>
+            [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
     });
 
     const { data: cards } = useQuery({
@@ -48,8 +50,6 @@ export default function TransactionPage() {
             description: descriptionRef.current?.value,
         };
 
-        console.log("New Transaction:", newTransaction);
-
         const res = await fetch("/api/transaction", {
             method: "POST",
             headers: {
@@ -61,7 +61,7 @@ export default function TransactionPage() {
             alert("Failed to add transaction");
             return;
         }
-        alert("Transaction added successfully");
+        refetch();
     }
 
     return (
@@ -95,7 +95,7 @@ export default function TransactionPage() {
                                     <TableCell className="border">{e.date.toLocaleDateString()}</TableCell>
                                     <TableCell className="border">{e.merchant}</TableCell>
                                     <TableCell className="border">{cards?.find(x => x.id == e.card_id)?.name}</TableCell>
-                                    <TableCell className="border">{e.amount.toLocaleString()}</TableCell>
+                                    <TableCell className="text-right border">{e.amount.toLocaleString()}</TableCell>
                                     <TableCell className="border">{e.description}</TableCell>
                                 </TableRow>
                             ))

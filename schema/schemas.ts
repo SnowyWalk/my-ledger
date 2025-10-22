@@ -10,9 +10,9 @@ export type CardType = z.infer<typeof Card>;
 
 export const Transaction = z.object({
     id: z.uuid(),
-    date: z.date(),
+    date: z.coerce.date(),
     merchant: z.string().max(100),
-    amount: z.number().int(),
+    amount: z.coerce.number().int(),
     card_id: z.uuid(),
     description: z.string().max(255).optional(),
 });
