@@ -4,6 +4,7 @@ import "./globals.css";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import QueryProvider from "@/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,12 +36,14 @@ export default function RootLayout({
             <Link href="/dashboard" className="text-lg hover:underline">Dashboard</Link>
             <Link href="/transaction" className="text-lg hover:underline">Transaction</Link>
             <Link href="/card" className="text-lg hover:underline">Card</Link>
+            <Link href="/setting" className="text-lg hover:underline">Settings</Link>
           </section>
           <Separator />
           <section className="m-4">
             {children}
           </section>
         </QueryProvider>
+        <Toaster position="top-center"/>
       </body>
     </html>
   );

@@ -18,9 +18,9 @@ export const Transaction = z.object({
 });
 export type TransactionType = z.infer<typeof Transaction>;
 
-export const Settings = z.object({
-    startDayOfMonth: z.number().int().min(1).max(28).default(25),
-    goalSpending: z.number().int().min(0).default(100_000),
-    income: z.number().int().min(0).default(200_000),
+export const Setting = z.object({
+    startDayOfMonth: z.coerce.number().int().min(1).max(28).default(25),
+    goalSpending: z.coerce.number().int().min(0).default(100_000),
+    income: z.coerce.number().int().min(0).default(200_000),
 });
-export type SettingsType = z.infer<typeof Settings>;
+export type SettingType = z.infer<typeof Setting>;

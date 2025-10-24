@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 import { parse, isValid } from "date-fns";
 import { ko } from "date-fns/locale";
 

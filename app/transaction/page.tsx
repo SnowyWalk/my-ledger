@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { CardContent, CardHeader, Card as CardUI } from "@/components/ui/card";
 import { Card, CardType, Transaction, TransactionType } from "@/schema/schemas";
 import { Separator } from "@radix-ui/react-separator";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import DatePicker from "@/components/DatePicker";
 import { useRef, useState } from "react";
@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { parseKoreanDate } from "@/lib/utils";
 
 export default function TransactionPage() {
+    const queryClient = useQueryClient();
+
     const { data: transactions, isLoading, refetch } = useQuery({
         queryKey: ["transaction"],
         queryFn: async () => {
@@ -61,6 +63,7 @@ export default function TransactionPage() {
             alert("Failed to add transaction");
             return;
         }
+        queryClient.invalidateQueries({ queryKey: ["transaction"] });
         refetch();
     }
 

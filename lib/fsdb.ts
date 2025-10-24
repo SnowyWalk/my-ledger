@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { Transaction, TransactionType, Settings, SettingsType, Card, CardType } from "../schema/schemas";
+import { Transaction, TransactionType, Setting, SettingType, Card, CardType } from "../schema/schemas";
 
 const dataDir = path.join(process.cwd(), "data");
 const transactionPath = path.join(dataDir, "transactions.json");
@@ -10,7 +10,7 @@ const cardPath = path.join(dataDir, "cards.json");
 async function ensure() {
   try { await fs.mkdir(dataDir, { recursive: true }); } catch { }
   try { await fs.access(transactionPath); } catch { await fs.writeFile(transactionPath, "[]", "utf-8"); }
-  try { await fs.access(settingPath); } catch { await fs.writeFile(settingPath, JSON.stringify(Settings.parse({}), null, 2)); }
+  try { await fs.access(settingPath); } catch { await fs.writeFile(settingPath, JSON.stringify(Setting.parse({}), null, 2)); }
   try { await fs.access(cardPath); } catch { await fs.writeFile(cardPath, "[]", "utf-8"); }
 }
 
@@ -27,15 +27,15 @@ export async function saveTransactions(list: TransactionType[]) {
   await fs.writeFile(transactionPath, JSON.stringify(list, null, 2), "utf-8");
 }
 
-export async function loadSettings(): Promise<SettingsType> {
+export async function loadSetting(): Promise<SettingType> {
   await ensure();
   const raw = await fs.readFile(settingPath, "utf-8");
-  return Settings.parse(JSON.parse(raw));
+  return Setting.parse(JSON.parse(raw));
 }
 
-export async function saveSettings(s: SettingsType) {
+export async function saveSetting(s: SettingType) {
   await ensure();
-  await fs.writeFile(settingPath, JSON.stringify(Settings.parse(s), null, 2), "utf-8");
+  await fs.writeFile(settingPath, JSON.stringify(Setting.parse(s), null, 2), "utf-8");
 }
 
 export async function loadCards(): Promise<CardType[]> {

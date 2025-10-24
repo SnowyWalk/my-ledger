@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadCards, loadTransactions, saveTransactions } from "../../../lib/fsdb";
+import { loadTransactions, saveTransactions } from "../../../lib/fsdb";
 import { z } from "zod";
 
 export async function GET(request: NextRequest) {

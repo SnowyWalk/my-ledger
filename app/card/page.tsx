@@ -5,13 +5,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CardContent, CardHeader, Card as CardUI } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { z } from "zod";
 import { Card, CardType } from "@/schema/schemas";
 
 export default function CardPage() {
+    const queryClient = useQueryClient();
     const { data: cards, isLoading, refetch } = useQuery({
         queryKey: ["card"],
         queryFn: async () => {
@@ -20,7 +21,6 @@ export default function CardPage() {
                 throw new Error(`HTTP ${res.status}`);
             return z.array(Card).parse(await res.json());
         },
-        staleTime: 5000,
     });
 
     const nameRef = useRef<HTMLInputElement>(null);
@@ -49,6 +49,7 @@ export default function CardPage() {
             console.log("Error saving card:", data);
             throw new Error(data);
         } else {
+            queryClient.invalidateQueries({ queryKey: ["card"] });
             refetch();
         }
     }
