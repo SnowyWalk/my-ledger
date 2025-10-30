@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import QueryProvider from "@/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner"
+// import "@egjs/grid/css/grid.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* <script src="//naver.github.io/egjs-grid/release/latest/dist/grid.min.js"></script> */}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
