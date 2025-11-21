@@ -5,7 +5,6 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import QueryProvider from "@/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner"
-// import "@egjs/grid/css/grid.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

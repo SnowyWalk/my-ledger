@@ -5,7 +5,6 @@ import { z } from "zod";
 export async function GET(request: NextRequest) {
     try {
         const cards = await loadCards();
-        console.log("@@@@ GET /api/card");
         return NextResponse.json(cards);
     } catch (error) {
         if (error instanceof z.ZodError) {
