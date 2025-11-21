@@ -208,13 +208,13 @@ export default function GoalProgress() {
                     <div className="flex flex-col gap-1">
                         <Separator className="mt-0" />
                         {/* 1. 계획 대비 현재 상황 (퍼센트 추가됨) */}
-                        <Label className="text-sm text-muted-foreground mt-1">
-                            계획대로라면 오늘까지 <Empathed value={calculations.expectedSpent} />
-                            <span className="ml-1">({calculations.expectedProgressPercent.toFixed(1)}%)</span> 사용했어야 합니다.
+                        <Label className="text-sm text-muted-foreground mt-1 gap-1">
+                            <span>계획대로라면 오늘까지 <Empathed value={calculations.expectedSpent} /></span>
+                            <span>({calculations.expectedProgressPercent.toFixed(1)}%)</span>사용했어야 합니다.
                         </Label>
 
-                        <Label className="text-sm text-muted-foreground">
-                            실제로는 <Empathed value={spentThisMonth} /> 사용했습니다.{' '}
+                        <Label className="text-sm text-muted-foreground gap-1">
+                            <span>실제로는 <Empathed value={spentThisMonth} /> 사용했습니다.{' '}</span>
                             <span className={calculations.isOverSpent ? "text-red-500" : "text-blue-500"}>
                                 (<Empathed value={calculations.diff} /> {calculations.isOverSpent ? '초과했어요 😭' : '남았어요 👍'})
                             </span>
@@ -224,11 +224,11 @@ export default function GoalProgress() {
 
                         {/* 2. 예산 추천 */}
                         <Label className="text-sm text-muted-foreground mt-1">
-                            원래 계획은 하루에 <Empathed value={calculations.dailyBudget} />씩 사용하는 것입니다.
+                            <span>원래 계획은 하루에 <Empathed value={calculations.dailyBudget} /> 씩 사용하는 것입니다.</span>
                         </Label>
 
                         <Label className="text-sm text-muted-foreground">
-                            여태까지는 하루에 <Empathed value={calculations.actualDailyAverage} />씩 사용했습니다.
+                            <span>여태까지는 하루에 <Empathed value={calculations.actualDailyAverage} /> 씩 사용했습니다.</span>
                         </Label>
 
                         <Label className={`text-sm ${calculations.isTotalOverSpent ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
@@ -240,15 +240,15 @@ export default function GoalProgress() {
                             ) : (
                                 // 정상일 경우
                                 <span>
-                                    남은 기간 동안 하루에 <Empathed value={calculations.remainingDailyBudget} />씩 사용 가능해요.
+                                    남은 기간 동안 하루에 <Empathed value={calculations.remainingDailyBudget} /> 씩 사용 가능해요.
                                 </span>
                             )}
                         </Label>
 
                         <Separator />
 
-                        <Label className="text-sm text-muted-foreground mt-3">
-                            이 속도대로면 월말에 총 사용 예상 금액은 <Empathed value={calculations.projectedTotalSpending} />
+                        <Label className="text-sm text-muted-foreground mt-3 gap-1">
+                            <span>이 속도대로면 월말에 총 사용 예상 금액은 <Empathed value={calculations.projectedTotalSpending} /></span>
                             <span className={calculations.projectedTotalPercent > 100 ? "text-red-500 font-medium" : "text-blue-500"}>
                                 ({calculations.projectedTotalPercent.toFixed(1)}%)
                             </span> 입니다.
