@@ -2,6 +2,7 @@
 
 import { ChartAreaStacked } from "@/components/ChartAreaStacked";
 import GoalProgress from "@/components/GoalProgress";
+import CategorizedSpendingChart from "@/components/CategorizedSpendingChart";
 import { Card as CardUI, CardHeader, CardContent } from "@/components/ui/card";
 import { FrameGrid } from "@egjs/react-grid";
 
@@ -22,6 +23,20 @@ export default function DashboardPage() {
                     [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
                     [0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2],
                     [0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
+                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
                 ]}
                 gap={8}
                 defaultDirection="end"
@@ -43,6 +58,15 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <ChartAreaStacked />
+                    </CardContent>
+                </CardUI>
+
+                <CardUI key="CategorizedSpendingChart" className="w-full h-full">
+                    <CardHeader>
+                        Categorized Spending Chart
+                    </CardHeader>
+                    <CardContent>
+                        <CategorizedSpendingChart />
                     </CardContent>
                 </CardUI>
             </FrameGrid>
