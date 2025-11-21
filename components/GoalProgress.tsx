@@ -247,7 +247,7 @@ export default function GoalProgress() {
 
                         <Separator />
 
-                        <Label className="text-sm text-muted-foreground mt-3 gap-1">
+                        <Label className="text-xl text-muted-foreground mt-2 gap-1">
                             <span>이 속도대로면 월말에 총 사용 예상 금액은 <Empathed value={calculations.projectedTotalSpending} /></span>
                             <span className={calculations.projectedTotalPercent > 100 ? "text-red-500 font-medium" : "text-blue-500"}>
                                 ({calculations.projectedTotalPercent.toFixed(1)}%)
