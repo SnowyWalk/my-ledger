@@ -24,3 +24,13 @@ export const Setting = z.object({
     income: z.coerce.number().int().min(0).default(200_000),
 });
 export type SettingType = z.infer<typeof Setting>;
+
+export const CategoryRule = z.object({
+  id: z.string(), // ID는 UUID (string)으로 관리하는 것이 좋습니다.
+  pattern: z.string(),
+  categoryId: z.string(),
+  subCategoryId: z.string().nullable(),
+  active: z.boolean(),
+});
+
+export type CategoryRuleType = z.infer<typeof CategoryRule>;

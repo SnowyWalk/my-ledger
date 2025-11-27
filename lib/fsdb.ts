@@ -1,17 +1,19 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { Transaction, TransactionType, Setting, SettingType, Card, CardType } from "../schema/schemas";
+import { Transaction, TransactionType, Setting, SettingType, Card, CardType, CategoryRuleType, CategoryRule } from "../schema/schemas";
 
 const dataDir = path.join(process.cwd(), "data");
 const transactionPath = path.join(dataDir, "transactions.json");
 const settingPath = path.join(dataDir, "settings.json");
 const cardPath = path.join(dataDir, "cards.json");
+const rulePath = path.join(dataDir, "rules.json");
 
 async function ensure() {
   try { await fs.mkdir(dataDir, { recursive: true }); } catch { }
   try { await fs.access(transactionPath); } catch { await fs.writeFile(transactionPath, "[]", "utf-8"); }
   try { await fs.access(settingPath); } catch { await fs.writeFile(settingPath, JSON.stringify(Setting.parse({}), null, 2)); }
   try { await fs.access(cardPath); } catch { await fs.writeFile(cardPath, "[]", "utf-8"); }
+  try { await fs.access(rulePath); } catch { await fs.writeFile(rulePath, "[]", "utf-8"); }
 }
 
 export async function loadTransactions(): Promise<TransactionType[]> {
@@ -48,4 +50,17 @@ export async function loadCards(): Promise<CardType[]> {
 export async function saveCards(list: CardType[]) {
   await ensure();
   await fs.writeFile(cardPath, JSON.stringify(list, null, 2), "utf-8");
+}
+
+export async function loadCategoryRules(): Promise<CategoryRuleType[]> {
+  await ensure();
+  const raw = await fs.readFile(rulePath, "utf-8");
+  const arr = JSON.parse(raw);
+  // Zod로 파싱하여 타입 안전성 확보
+  return arr.map((x: any) => CategoryRule.parse(x));
+}
+
+export async function saveCategoryRules(list: CategoryRuleType[]) {
+  await ensure();
+  await fs.writeFile(rulePath, JSON.stringify(list, null, 2), "utf-8");
 }

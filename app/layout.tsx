@@ -39,6 +39,7 @@ export default function RootLayout({
             <Link href="/dashboard" className="text-lg hover:underline">Dashboard</Link>
             <Link href="/transaction" className="text-lg hover:underline">Transaction</Link>
             <Link href="/card" className="text-lg hover:underline">Card</Link>
+            <Link href="/category-manager" className="text-lg hover:underline">Category Manager</Link>
             <Link href="/setting" className="text-lg hover:underline">Settings</Link>
           </section>
           <Separator />
