@@ -9,17 +9,15 @@ import { z } from 'zod';
 import { Skeleton } from './ui/skeleton';
 
 // --- Category Metadata Definition ---
-// 카테고리 ID에 따른 색상, 아이콘, 이름 매핑 정보
 const CATEGORY_META: Record<string, { name: string, icon: any, color: string }> = {
-  cat_food: { name: '식비', icon: Utensils, color: '#3b82f6' }, // Blue
-  cat_transport: { name: '교통/차량', icon: Bus, color: '#10b981' }, // Emerald
-  cat_shopping: { name: '쇼핑', icon: ShoppingBag, color: '#f59e0b' }, // Amber
-  cat_fixed: { name: '고정지출', icon: Receipt, color: '#ef4444' }, // Red
-  cat_hobby: { name: '취미/여가', icon: Coffee, color: '#8b5cf6' }, // Violet
-  uncategorized: { name: '분류 미지정', icon: CircleHelp, color: '#94a3b8' } // Slate (Gray)
+  cat_food: { name: '식비', icon: Utensils, color: '#3b82f6' },
+  cat_transport: { name: '교통/차량', icon: Bus, color: '#10b981' },
+  cat_shopping: { name: '쇼핑', icon: ShoppingBag, color: '#f59e0b' },
+  cat_fixed: { name: '고정지출', icon: Receipt, color: '#ef4444' },
+  cat_hobby: { name: '취미/여가', icon: Coffee, color: '#8b5cf6' },
+  uncategorized: { name: '분류 미지정', icon: CircleHelp, color: '#94a3b8' }
 };
 
-// 하위 카테고리 이름 매핑 (필요하다면 전역 상수나 DB에서 관리 권장)
 const SUB_CATEGORY_NAMES: Record<string, string> = {
   sub_groceries: '장보기', sub_dining: '외식',
   sub_public: '대중교통', sub_taxi: '택시',
@@ -27,7 +25,14 @@ const SUB_CATEGORY_NAMES: Record<string, string> = {
   sub_youtube: '유튜브', sub_coupang: '쿠팡', sub_baemin: '배민', sub_chatgpt: 'ChatGPT', sub_googledrive: '구글드라이브', sub_etc: '기타 구독'
 };
 
-export default function CategorizedSpendingChart() {
+interface CategorizedSpendingChartProps {
+    period: {
+        startDate: Date;
+        endDate: Date;
+    };
+}
+
+export default function CategorizedSpendingChart({ period }: CategorizedSpendingChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
@@ -42,7 +47,7 @@ export default function CategorizedSpendingChart() {
   });
 
   const { data: rules, isLoading: isRuleLoading } = useQuery({
-    queryKey: ["category-rules"], // 키를 명확히 구분
+    queryKey: ["category-rules"],
     queryFn: async () => {
       const res = await fetch("/api/category-manager");
       if (!res.ok) throw new Error("Failed to fetch rules");
@@ -50,22 +55,25 @@ export default function CategorizedSpendingChart() {
     }
   });
 
-  // 2. Data Processing & Aggregation
+  // 2. Data Processing
   const spendingData = useMemo(() => {
     if (!transactions || !rules) return [];
 
-    // (1) 지출만 필터링 (amount < 0) 및 양수로 변환
-    const expenses = transactions.filter(t => t.amount < 0);
+    const { startDate, endDate } = period;
 
-    // (2) 집계용 맵 생성
-    // 구조: { [catId]: { value: 0, sub: { [subId]: 0 } } }
+    // 기간 내 지출 필터링
+    const expenses = transactions.filter(t => 
+        t.amount < 0 && 
+        t.date >= startDate && 
+        t.date < endDate
+    );
+
     const aggMap: Record<string, { value: number, sub: Record<string, number> }> = {};
 
     expenses.forEach(tx => {
       const absAmount = Math.abs(tx.amount);
       let matchedRule = null;
 
-      // 규칙 매칭 (상위 규칙 우선)
       for (const rule of rules) {
         try {
           if (new RegExp(rule.pattern, 'i').test(tx.merchant)) {
@@ -86,14 +94,13 @@ export default function CategorizedSpendingChart() {
       aggMap[catId].sub[subId] = (aggMap[catId].sub[subId] || 0) + absAmount;
     });
 
-    // (3) Chart Data Format으로 변환
     const result = Object.entries(aggMap).map(([catId, data]) => {
       const meta = CATEGORY_META[catId] || { name: catId, icon: Layers, color: '#cbd5e1' };
       
       const subCategories = Object.entries(data.sub).map(([subId, val]) => ({
         name: SUB_CATEGORY_NAMES[subId] || (subId === 'default' ? '기타' : subId),
         value: val
-      })).sort((a, b) => b.value - a.value); // 하위 카테고리 내림차순 정렬
+      })).sort((a, b) => b.value - a.value);
 
       return {
         id: catId,
@@ -105,10 +112,9 @@ export default function CategorizedSpendingChart() {
       };
     });
 
-    // (4) 금액 큰 순서대로 정렬
     return result.sort((a, b) => b.value - a.value);
 
-  }, [transactions, rules]);
+  }, [transactions, rules, period]);
 
   // --- Helpers ---
   const totalSpending = useMemo(() => spendingData.reduce((acc, curr) => acc + curr.value, 0), [spendingData]);
@@ -133,7 +139,7 @@ export default function CategorizedSpendingChart() {
     return (
       <div className="w-full max-w-5xl mx-auto p-4">
          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-10 text-center text-gray-500">
-            지출 내역이 없습니다.
+            해당 기간의 지출 내역이 없습니다.
          </div>
       </div>
     )
@@ -159,7 +165,26 @@ export default function CategorizedSpendingChart() {
             <div className="relative w-full lg:w-1/2 min-h-[300px] flex flex-col items-center justify-center">
               <h3 className="absolute top-0 left-0 text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Spending</h3>
               
-              <ResponsiveContainer width="100%" height="100%">
+              {/* Central Text Area (Behind Chart via z-index/DOM order) */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center z-0">
+                <span className="text-sm text-gray-500 font-medium mb-1 animate-in fade-in zoom-in duration-200 key={centerDisplayData ? centerDisplayData.id : 'total'}">
+                  {centerDisplayData ? centerDisplayData.name : '총 지출'}
+                </span>
+                <span className="text-2xl font-bold text-gray-800 animate-in fade-in zoom-in duration-200">
+                  {centerDisplayData 
+                    ? formatCurrency(centerDisplayData.value) 
+                    : formatCurrency(totalSpending)
+                  }
+                </span>
+                {centerDisplayData && (
+                    <div className="mt-2 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                        {((centerDisplayData.value / totalSpending) * 100).toFixed(1)}%
+                    </div>
+                )}
+              </div>
+
+              {/* Chart */}
+              <ResponsiveContainer width="100%" height="100%" className="relative z-10">
                 <PieChart>
                   <Pie
                     data={spendingData}
@@ -197,29 +222,11 @@ export default function CategorizedSpendingChart() {
                   </Pie>
                   <Tooltip 
                     formatter={(value: number) => formatCurrency(value)}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', zIndex: 100 }}
                     itemStyle={{ color: '#374151', fontWeight: 600 }}
                   />
                 </PieChart>
               </ResponsiveContainer>
-
-              {/* Center Text */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                <span className="text-sm text-gray-500 font-medium mb-1 animate-in fade-in zoom-in duration-200 key={centerDisplayData ? centerDisplayData.id : 'total'}">
-                  {centerDisplayData ? centerDisplayData.name : '총 지출'}
-                </span>
-                <span className="text-2xl font-bold text-gray-800 animate-in fade-in zoom-in duration-200">
-                  {centerDisplayData 
-                    ? formatCurrency(centerDisplayData.value) 
-                    : formatCurrency(totalSpending)
-                  }
-                </span>
-                {centerDisplayData && (
-                    <div className="mt-2 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-                        {((centerDisplayData.value / totalSpending) * 100).toFixed(1)}%
-                    </div>
-                )}
-              </div>
             </div>
 
             {/* Right: Detail Panel */}
@@ -246,9 +253,7 @@ export default function CategorizedSpendingChart() {
 
               <div className="flex-1 flex flex-col overflow-hidden">
                 {selectedData ? (
-                  // Detail View
                   <div className="h-full flex flex-col animate-in slide-in-from-right-4 duration-300">
-                    {/* Sub-Category Mini Pie Chart */}
                     {selectedData.subCategories.length > 0 && selectedData.subCategories[0].name !== '기타' ? (
                         <div className="flex flex-row items-center h-[140px] mb-4 bg-white rounded-lg p-3 shadow-sm border border-gray-100">
                             <div className="w-1/3 h-full">
@@ -262,12 +267,17 @@ export default function CategorizedSpendingChart() {
                                             outerRadius={45}
                                             paddingAngle={2}
                                             dataKey="value"
+                                            nameKey="name"
                                         >
                                             {selectedData.subCategories.map((entry, index) => (
                                                 <Cell key={`cell-sub-${index}`} fill={selectedData.color} fillOpacity={1 - (index * 0.15)} strokeWidth={0} />
                                             ))}
                                         </Pie>
-                                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                                        <Tooltip 
+                                            formatter={(value: number) => formatCurrency(value)} 
+                                            labelStyle={{ display: 'none' }}
+                                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                                        />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
@@ -282,7 +292,6 @@ export default function CategorizedSpendingChart() {
                         </div>
                     )}
 
-                    {/* Sub-Category List */}
                     <div className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-200">
                         {selectedData.subCategories.map((sub, idx) => (
                             <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 hover:border-blue-200 transition-colors group">
@@ -304,7 +313,6 @@ export default function CategorizedSpendingChart() {
                     </div>
                   </div>
                 ) : (
-                  // All Categories List
                   <div className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-200">
                     {spendingData.map((item, idx) => (
                       <div 
