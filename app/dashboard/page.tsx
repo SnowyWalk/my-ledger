@@ -10,10 +10,13 @@ import { Setting } from "@/schema/schemas";
 import { ChartAreaStacked } from "@/components/ChartAreaStacked";
 import GoalProgress from "@/components/GoalProgress";
 import CategorizedSpendingChart from "@/components/CategorizedSpendingChart";
-import { Card as CardUI, CardHeader, CardContent } from "@/components/ui/card";
+import { Card as CardUI, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { FrameGrid } from "@egjs/react-grid";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import CardUsageStatus from "@/components/CardUsageStatus";
+import TopMerchants from "@/components/TopMerchants";
+import WeeklyDayPattern from "@/components/WeeklyDayPattern";
 
 export default function DashboardPage() {
     // 1. 기준이 되는 날짜 (초기값: 오늘)
@@ -39,15 +42,15 @@ export default function DashboardPage() {
 
         // viewDate가 기준일(startDay)보다 작으면, '지난 달'의 주기임
         // 예: 시작일 25일, viewDate가 11월 5일 -> 10월 25일 ~ 11월 24일
-        const baseMonthDate = currentDay < startDay 
-            ? subMonths(viewDate, 1) 
+        const baseMonthDate = currentDay < startDay
+            ? subMonths(viewDate, 1)
             : viewDate;
 
         const startDate = new Date(baseMonthDate.getFullYear(), baseMonthDate.getMonth(), startDay);
         const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, startDay);
         // 종료일은 다음달 시작일 전날까지로 표기하는 것이 일반적 (예: ~24일)
         // 계산 편의를 위해 endDate는 '다음 주기 시작일(25일)'로 잡고, UI 표기나 필터링에서 조정합니다.
-        
+
         return { startDate, endDate };
     }, [viewDate, setting]);
 
@@ -65,7 +68,6 @@ export default function DashboardPage() {
 
     return (
         <section className="space-y-4">
-            {/* 상단 기간 선택기 */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-4 rounded-xl border shadow-sm">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">Dashboard</h1>
@@ -78,7 +80,7 @@ export default function DashboardPage() {
                     <Button variant="ghost" size="icon" onClick={handlePrev}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    
+
                     <div className="text-center min-w-[200px]">
                         <div className="text-sm font-semibold">
                             {format(period.startDate, "yyyy년 MM월 dd일")} ~ {format(displayEndDate, "MM월 dd일")}
@@ -91,51 +93,53 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* 그리드 레이아웃 */}
-            {/* <FrameGrid
-                rectSize={{ inlineSize: 120, contentSize: 50 }}
-                frame={[
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2],
-                    [0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2],
-                    [0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2],
-                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
-                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
-                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
-                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
-                    [3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0],
-                ]}
-                gap={8}
-                defaultDirection="end"
-                useFit
-                observeChildren
-            > */}
-                <CardUI key="goalProgress" className="w-1/3 h-full">
-                    <CardHeader>Goal Progress</CardHeader>
-                    <CardContent>
-                        <GoalProgress period={period} />
-                    </CardContent>
-                </CardUI>
+            <CardUI key="goalProgress" className="w-1/3 h-full">
+                <CardHeader>Goal Progress</CardHeader>
+                <CardContent>
+                    <GoalProgress period={period} />
+                </CardContent>
+            </CardUI>
 
-                <CardUI key="ChartAreaStacked" className="w-35/40 h-full">
-                    <CardHeader>Monthly Trend</CardHeader>
-                    <CardContent>
-                        <ChartAreaStacked period={period} />
-                    </CardContent>
-                </CardUI>
+            <CardUI key="ChartAreaStacked" className="w-35/40 h-full">
+                <CardHeader>Monthly Trend</CardHeader>
+                <CardContent>
+                    <ChartAreaStacked period={period} />
+                </CardContent>
+            </CardUI>
 
-                <CardUI key="CategorizedSpendingChart" className="w-1/2 h-full">
-                    <CardHeader>Category Analysis</CardHeader>
-                    <CardContent>
-                        <CategorizedSpendingChart period={period} />
-                    </CardContent>
-                </CardUI>
-            {/* </FrameGrid> */}
+            <CardUI key="CategorizedSpendingChart" className="w-1/2 h-full">
+                <CardHeader>Category Analysis</CardHeader>
+                <CardContent>
+                    <CategorizedSpendingChart period={period} />
+                </CardContent>
+            </CardUI>
+
+            <CardUI key="CardUsageStatus" className="w-1/2 h-full">
+                <CardHeader>
+                    <CardTitle>카드별 사용 현황</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <CardUsageStatus period={period} />
+                </CardContent>
+            </CardUI>
+
+            <CardUI key="WeeklyDayPattern" className="w-1/2 h-full">
+                <CardHeader>
+                    <CardTitle>요일별 지출 패턴</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[250px]"> {/* 차트 높이 확보를 위해 h-[px] 지정 권장 */}
+                    <WeeklyDayPattern period={period} />
+                </CardContent>
+            </CardUI>
+
+            <CardUI key="TopMerchants" className="w-1/2 h-full">
+                <CardHeader>
+                    <CardTitle>최다 지출 거래처</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <TopMerchants period={period} />
+                </CardContent>
+            </CardUI>
         </section >
     );
 }
