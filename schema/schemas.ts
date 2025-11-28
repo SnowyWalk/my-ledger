@@ -1,13 +1,23 @@
 import { z } from "zod";
 
+// 실적 구간 정의 (새로 추가)
+export const PerformanceTier = z.object({
+    amount: z.coerce.number().int().min(0), // 실적 기준 금액 (예: 300,000)
+    benefit: z.string(),                    // 혜택 내용 (예: 1만원 할인, 5% 적립)
+});
+export type PerformanceTierType = z.infer<typeof PerformanceTier>;
+
 export const Card = z.object({
     id: z.uuid(),
     name: z.string().max(100),
     limit: z.number().int().min(0),
     dueDay: z.number().int().min(1).max(31),
+    // 실적 구간 리스트 추가 (기본값 빈 배열)
+    performance: z.array(PerformanceTier).default([]), 
 });
 export type CardType = z.infer<typeof Card>;
 
+// ... (Transaction, Setting, CategoryRule 등 나머지는 그대로 유지)
 export const Transaction = z.object({
     id: z.uuid(),
     date: z.coerce.date(),
@@ -26,7 +36,7 @@ export const Setting = z.object({
 export type SettingType = z.infer<typeof Setting>;
 
 export const CategoryRule = z.object({
-  id: z.string(), // ID는 UUID (string)으로 관리하는 것이 좋습니다.
+  id: z.string(), 
   pattern: z.string(),
   categoryId: z.string(),
   subCategoryId: z.string().nullable(),
