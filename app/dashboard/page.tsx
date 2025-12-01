@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { format, addMonths, subMonths } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-// ... (기존 import 유지)
 import { Setting } from "@/schema/schemas";
 
 import { ChartAreaStacked } from "@/components/ChartAreaStacked";
@@ -49,91 +48,115 @@ export default function DashboardPage() {
     const handleNext = () => setViewDate(prev => addMonths(prev, 1));
 
     if (isLoading || !period) {
-        return <div className="p-8 space-y-4"><Skeleton className="w-full h-12" /><Skeleton className="w-full h-[500px]" /></div>;
+        return (
+            <div className="p-4 space-y-4">
+                <Skeleton className="w-full h-12 rounded-xl" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Skeleton className="h-[300px] rounded-xl" />
+                    <Skeleton className="h-[300px] rounded-xl" />
+                </div>
+                <Skeleton className="w-full h-[400px] rounded-xl" />
+            </div>
+        );
     }
 
     const displayEndDate = new Date(period.endDate);
     displayEndDate.setDate(displayEndDate.getDate() - 1);
 
     return (
-        <section className="space-y-4">
-            {/* [수정됨] sticky 속성 추가 
-              - sticky: 스크롤 시 고정
-              - top-4: 화면 최상단에서 약간(1rem) 떨어진 위치에 고정 (레이아웃 여백 고려)
-              - z-50: 다른 컨텐츠(차트 등)보다 위에 보이도록 설정
-            */}
-            <div className="sticky top-4 z-50 flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-4 rounded-xl border shadow-sm">
+        <section className="space-y-4 pb-8">
+            {/* 1. 컨트롤 바 (Sticky) */}
+            <div className="sticky top-4 z-50 flex flex-col md:flex-row justify-between items-center gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md p-4 rounded-xl border shadow-sm transition-all">
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">Dashboard</h1>
                     <p className="text-muted-foreground text-xs">
-                        가계부 현황을 한눈에 확인하세요.
+                        {format(period.startDate, "yyyy년 MM월 dd일")} ~ {format(displayEndDate, "MM월 dd일")}
                     </p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-secondary/30 p-1.5 rounded-lg">
-                    <Button variant="ghost" size="icon" onClick={handlePrev}>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" size="icon" onClick={handlePrev}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-
-                    <div className="text-center min-w-[200px]">
-                        <div className="text-sm font-semibold">
-                            {format(period.startDate, "yyyy년 MM월 dd일")} ~ {format(displayEndDate, "MM월 dd일")}
-                        </div>
-                    </div>
-
-                    <Button variant="ghost" size="icon" onClick={handleNext}>
+                    <Button variant="outline" size="icon" onClick={handleNext}>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
 
-            <CardUI key="goalProgress" className="w-1/3 h-full">
-                <CardHeader>Goal Progress</CardHeader>
-                <CardContent>
-                    <GoalProgress period={period} />
-                </CardContent>
-            </CardUI>
+            {/* 2. 상단 핵심 지표 (Grid 유지 - 높이가 일정하므로) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
+                <CardUI className="">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="">Goal Progress</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <GoalProgress period={period} />
+                    </CardContent>
+                </CardUI>
 
-            <CardUI key="ChartAreaStacked" className="w-35/40 h-full">
-                <CardHeader>Monthly Trend</CardHeader>
-                <CardContent>
+                <CardUI className="">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="">Weekly Pattern</CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[200px]">
+                        <WeeklyDayPattern period={period} />
+                    </CardContent>
+                </CardUI>
+            </div>
+
+            {/* 3. 중단 와이드 차트 (독립 배치) */}
+            <CardUI className="">
+                <CardHeader className="pb-2">
+                    <CardTitle className="">Spending Trend</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[600px]">
                     <ChartAreaStacked period={period} />
                 </CardContent>
             </CardUI>
 
-            <CardUI key="CategorizedSpendingChart" className="w-1/2 h-full min-h-[693px]">
-                <CardHeader>Category Analysis</CardHeader>
-                <CardContent>
-                    <CategorizedSpendingChart period={period} />
-                </CardContent>
-            </CardUI>
+            {/* 4. 하단 가변 높이 영역 (Masonry - Manual Columns) */}
+            {/* 좌/우 컬럼을 분리하여 각자 내부 컨텐츠 높이만큼 늘어나게 함 */}
+            <div className="flex flex-col lg:flex-row gap-4 items-start">
+                
+                {/* 왼쪽 컬럼 (Category Analysis) */}
+                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                    <CardUI className="">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="">Category Analysis</CardTitle>
+                        </CardHeader>
+                        {/* 높이 제한 제거 (h-auto) */}
+                        <CardContent className="h-auto p-0 min-h-[400px]">
+                            <CategorizedSpendingChart period={period} />
+                        </CardContent>
+                    </CardUI>
+                </div>
 
-            <CardUI key="CardUsageStatus" className="w-1/2 h-full">
-                <CardHeader>
-                    <CardTitle>카드별 사용 현황</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <CardUsageStatus period={period} />
-                </CardContent>
-            </CardUI>
+                {/* 오른쪽 컬럼 (Merchants + Cards) */}
+                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                    {/* Top Merchants: 리스트 길이에 따라 늘어남 */}
+                    <CardUI className="">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="">Top Merchants</CardTitle>
+                        </CardHeader>
+                        {/* 높이 제한 제거, 스크롤 제거 */}
+                        <CardContent className="h-auto p-0 px-4 pb-4">
+                            <TopMerchants period={period} />
+                        </CardContent>
+                    </CardUI>
 
-            <CardUI key="WeeklyDayPattern" className="w-1/2 h-full">
-                <CardHeader>
-                    <CardTitle>요일별 지출 패턴</CardTitle>
-                </CardHeader>
-                <CardContent className="h-[250px]">
-                    <WeeklyDayPattern period={period} />
-                </CardContent>
-            </CardUI>
-
-            <CardUI key="TopMerchants" className="w-1/2 h-full">
-                <CardHeader>
-                    <CardTitle>최다 지출 거래처</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <TopMerchants period={period} />
-                </CardContent>
-            </CardUI>
-        </section >
+                    {/* Card Performance: 리스트 길이에 따라 늘어남 */}
+                    <CardUI className="">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="">Card Performance</CardTitle>
+                        </CardHeader>
+                        {/* 높이 제한 제거, 스크롤 제거 */}
+                        <CardContent className="h-auto p-0 px-4 pb-4">
+                            <CardUsageStatus period={period} />
+                        </CardContent>
+                    </CardUI>
+                </div>
+            </div>
+        </section>
     );
 }
