@@ -120,7 +120,7 @@ export default function DashboardPage() {
             <div className="flex flex-col lg:flex-row gap-4 items-start">
                 
                 {/* 왼쪽 컬럼 (Category Analysis) */}
-                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                <div className="w-full lg:w-1/2 flex flex-col gap-0">
                     <CardUI className="">
                         <CardHeader className="pb-2">
                             <CardTitle className="">Category Analysis</CardTitle>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* 오른쪽 컬럼 (Merchants + Cards) */}
-                <div className="w-full lg:w-1/2 flex flex-col gap-4">
+                <div className="w-full lg:w-1/2 flex flex-col gap-0">
                     {/* Top Merchants: 리스트 길이에 따라 늘어남 */}
                     <CardUI className="">
                         <CardHeader className="pb-2">
