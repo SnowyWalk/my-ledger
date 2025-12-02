@@ -64,8 +64,20 @@ const CATEGORIES: Category[] = [
     id: 'cat_food',
     name: '식비',
     sub: [
+      { id: 'sub_dining', name: '식사' },
+      { id: 'sub_cafe', name: '카페/간식' },
+      { id: 'sub_alcohol', name: '술/유흥' },
       { id: 'sub_groceries', name: '장보기' },
-      { id: 'sub_dining', name: '외식' },
+    ]
+  },
+  {
+    id: 'cat_living',
+    name: '주거/통신',
+    sub: [
+      { id: 'sub_housing', name: '관리비/월세' },
+      { id: 'sub_utilities', name: '공과금(수도/가스)' },
+      { id: 'sub_telecom', name: '통신비' }, // 핸드폰, 인터넷
+      { id: 'sub_supplies', name: '생활용품' }, // 휴지, 세제 등 소모품
     ]
   },
   {
@@ -74,28 +86,62 @@ const CATEGORIES: Category[] = [
     sub: [
       { id: 'sub_public', name: '대중교통' },
       { id: 'sub_taxi', name: '택시' },
+      { id: 'sub_fuel', name: '주유' },
+      { id: 'sub_car_maint', name: '정비/보험/세금' },
     ]
   },
   {
     id: 'cat_shopping',
-    name: '쇼핑',
+    name: '쇼핑/뷰티',
     sub: [
-      { id: 'sub_necessary', name: '생필품' },
-      { id: 'sub_habit', name: '취미' },
-      { id: 'sub_unnecessary', name: '사치품' },
-      { id: 'sub_present', name: '선물' },
+      { id: 'sub_fashion', name: '의류/잡화' },
+      { id: 'sub_beauty', name: '화장품/미용' },
+      { id: 'sub_electronics', name: '가전/가구' },
+      { id: 'sub_etc_shopping', name: '기타쇼핑' }, // 온라인 쇼핑 등
     ]
   },
   {
-    id: 'cat_fixed',
-    name: '고정지출',
+    id: 'cat_health',
+    name: '의료/건강',
     sub: [
-      { id: 'sub_youtube', name: '유튜브 구독' },
-      { id: 'sub_coupang', name: '쿠팡멤버쉽' },
-      { id: 'sub_baemin', name: '배민' },
-      { id: 'sub_chatgpt', name: 'ChatGPT' },
-      { id: 'sub_googledrive', name: '구글드라이브' },
-      { id: 'sub_etc', name: '기타 구독' },
+      { id: 'sub_hospital', name: '병원비' },
+      { id: 'sub_pharmacy', name: '약국' },
+      { id: 'sub_fitness', name: '운동/헬스' },
+    ]
+  },
+  {
+    id: 'cat_culture',
+    name: '문화/여가',
+    sub: [
+      { id: 'sub_culture', name: '영화/공연/도서' },
+      { id: 'sub_subscription', name: 'OTT/구독' }, // 유튜브, 넷플릭스, 멤버십 등
+      { id: 'sub_hobby', name: '취미' },
+      { id: 'sub_travel', name: '여행/숙박' },
+    ]
+  },
+  {
+    id: 'cat_social',
+    name: '경조/선물',
+    sub: [
+      { id: 'sub_event', name: '경조사비' },
+      { id: 'sub_gift', name: '선물' },
+      { id: 'sub_dues', name: '모임회비' },
+    ]
+  },
+  {
+    id: 'cat_finance',
+    name: '금융/보험',
+    sub: [
+      { id: 'sub_insurance', name: '보험료' },
+      { id: 'sub_interest', name: '대출이자/세금' },
+    ]
+  },
+  {
+    id: 'cat_education',
+    name: '교육',
+    sub: [
+      { id: 'sub_academy', name: '학원/강의' },
+      { id: 'sub_books', name: '교재/교육비' },
     ]
   }
 ];
