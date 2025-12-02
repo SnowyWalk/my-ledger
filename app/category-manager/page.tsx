@@ -143,6 +143,11 @@ const CATEGORIES: Category[] = [
       { id: 'sub_academy', name: '학원/강의' },
       { id: 'sub_books', name: '교재/교육비' },
     ]
+  },
+  {
+    id: 'cat_etc',
+    name: '기타',
+    sub: []
   }
 ];
 
