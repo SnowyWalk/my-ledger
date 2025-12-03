@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import CardUsageStatus from "@/components/CardUsageStatus";
 import TopMerchants from "@/components/TopMerchants";
 import WeeklyDayPattern from "@/components/WeeklyDayPattern";
+import FixedExpenses from "@/components/FixedExpenses"; // [!code ++]
 import { useQuery } from "@tanstack/react-query";
 
 export default function DashboardPage() {
@@ -84,7 +85,7 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* 2. 상단 핵심 지표 (Grid 유지 - 높이가 일정하므로) */}
+            {/* 2. 상단 핵심 지표 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
                 <CardUI className="">
                     <CardHeader className="pb-2">
@@ -105,7 +106,7 @@ export default function DashboardPage() {
                 </CardUI>
             </div>
 
-            {/* 3. 중단 와이드 차트 (독립 배치) */}
+            {/* 3. 중단 와이드 차트 */}
             <CardUI className="">
                 <CardHeader className="pb-2">
                     <CardTitle className="">Spending Trend</CardTitle>
@@ -116,41 +117,45 @@ export default function DashboardPage() {
             </CardUI>
 
             {/* 4. 하단 가변 높이 영역 (Masonry - Manual Columns) */}
-            {/* 좌/우 컬럼을 분리하여 각자 내부 컨텐츠 높이만큼 늘어나게 함 */}
             <div className="flex flex-col lg:flex-row gap-4 items-start">
                 
-                {/* 왼쪽 컬럼 (Category Analysis) */}
+                {/* 왼쪽 컬럼 */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-0">
                     <CardUI className="">
                         <CardHeader className="pb-2">
                             <CardTitle className="">Category Analysis</CardTitle>
                         </CardHeader>
-                        {/* 높이 제한 제거 (h-auto) */}
                         <CardContent className="h-auto p-0 min-h-[400px]">
                             <CategorizedSpendingChart period={period} />
                         </CardContent>
                     </CardUI>
+
+                    {/* [!code ++] Fixed Expenses 추가 (왼쪽 컬럼 하단) */}
+                    <CardUI className="">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="">Fixed Expenses (Detected)</CardTitle>
+                        </CardHeader>
+                        <CardContent className="h-auto p-0 px-4 pb-4">
+                            <FixedExpenses period={period} />
+                        </CardContent>
+                    </CardUI>
                 </div>
 
-                {/* 오른쪽 컬럼 (Merchants + Cards) */}
+                {/* 오른쪽 컬럼 */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-0">
-                    {/* Top Merchants: 리스트 길이에 따라 늘어남 */}
                     <CardUI className="">
                         <CardHeader className="pb-2">
                             <CardTitle className="">Top Merchants</CardTitle>
                         </CardHeader>
-                        {/* 높이 제한 제거, 스크롤 제거 */}
                         <CardContent className="h-auto p-0 px-4 pb-4">
                             <TopMerchants period={period} />
                         </CardContent>
                     </CardUI>
 
-                    {/* Card Performance: 리스트 길이에 따라 늘어남 */}
                     <CardUI className="">
                         <CardHeader className="pb-2">
                             <CardTitle className="">Card Performance</CardTitle>
                         </CardHeader>
-                        {/* 높이 제한 제거, 스크롤 제거 */}
                         <CardContent className="h-auto p-0 px-4 pb-4">
                             <CardUsageStatus period={period} />
                         </CardContent>
