@@ -13,6 +13,7 @@ import { useRef, useState } from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { parseKoreanDate } from "@/lib/utils";
+import ExcelImportWizard from "@/components/ExcelImportWizard";
 
 export default function TransactionPage() {
     const queryClient = useQueryClient();
@@ -70,6 +71,11 @@ export default function TransactionPage() {
     return (
         <section>
             <h1>Transaction Page</h1>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Transaction Page</h1>
+                {/* 엑셀 업로드 버튼 추가 */}
+                {cards && <ExcelImportWizard cards={cards} />} 
+            </div>
             <Table className="w-[40%]" >
                 <TableHeader>
                     <TableRow>
