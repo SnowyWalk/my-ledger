@@ -19,6 +19,7 @@ import CategoryComparison from "@/components/CategoryComparison"; // [!code ++]
 import HighValueTransactions from "@/components/HighValueTransactions"; // [!code ++]
 import HourlySpendingPattern from "@/components/HourlySpendingPattern"; // [!code ++]
 import { useQuery } from "@tanstack/react-query";
+import UpcomingBills from "@/components/UpcomingBills";
 
 export default function DashboardPage() {
     const [viewDate, setViewDate] = useState<Date>(new Date());
@@ -111,6 +112,11 @@ export default function DashboardPage() {
                     <CardUI>
                         <CardHeader className="pb-2"><CardTitle>MoM Changes (전월 대비)</CardTitle></CardHeader>
                         <CardContent className="h-auto p-0 px-4 pb-4"><CategoryComparison period={period} /></CardContent>
+                    </CardUI>
+
+                    <CardUI className="border-indigo-100 dark:border-indigo-900 bg-indigo-50/20">
+                        <CardHeader className="pb-2"><CardTitle>Upcoming Bills (예정)</CardTitle></CardHeader>
+                        <CardContent className="h-auto p-0 px-4 pb-4"><UpcomingBills period={period} /></CardContent>
                     </CardUI>
                 </div>
 
