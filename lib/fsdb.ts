@@ -1,12 +1,13 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { Transaction, TransactionType, Setting, SettingType, Card, CardType, CategoryRuleType, CategoryRule } from "../schema/schemas";
+import { Transaction, TransactionType, Setting, SettingType, Card, CardType, CategoryRuleType, CategoryRule, Installment, InstallmentType } from "../schema/schemas";
 
 const dataDir = path.join(process.cwd(), "data");
 const transactionPath = path.join(dataDir, "transactions.json");
 const settingPath = path.join(dataDir, "settings.json");
 const cardPath = path.join(dataDir, "cards.json");
 const rulePath = path.join(dataDir, "rules.json");
+const installmentPath = path.join(dataDir, "installments.json");
 
 async function ensure() {
   try { await fs.mkdir(dataDir, { recursive: true }); } catch { }
@@ -14,6 +15,7 @@ async function ensure() {
   try { await fs.access(settingPath); } catch { await fs.writeFile(settingPath, JSON.stringify(Setting.parse({}), null, 2)); }
   try { await fs.access(cardPath); } catch { await fs.writeFile(cardPath, "[]", "utf-8"); }
   try { await fs.access(rulePath); } catch { await fs.writeFile(rulePath, "[]", "utf-8"); }
+  try { await fs.access(installmentPath); } catch { await fs.writeFile(installmentPath, "[]", "utf-8"); }
 }
 
 export async function loadTransactions(): Promise<TransactionType[]> {
@@ -63,4 +65,15 @@ export async function loadCategoryRules(): Promise<CategoryRuleType[]> {
 export async function saveCategoryRules(list: CategoryRuleType[]) {
   await ensure();
   await fs.writeFile(rulePath, JSON.stringify(list, null, 2), "utf-8");
+}
+
+export async function loadInstallments(): Promise<InstallmentType[]> {
+  await ensure();
+  const raw = await fs.readFile(installmentPath, "utf-8");
+  return JSON.parse(raw).map((x: any) => Installment.parse(x));
+}
+
+export async function saveInstallments(list: InstallmentType[]) {
+  await ensure();
+  await fs.writeFile(installmentPath, JSON.stringify(list, null, 2), "utf-8");
 }

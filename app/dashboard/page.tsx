@@ -20,6 +20,7 @@ import HighValueTransactions from "@/components/HighValueTransactions"; // [!cod
 import HourlySpendingPattern from "@/components/HourlySpendingPattern"; // [!code ++]
 import { useQuery } from "@tanstack/react-query";
 import UpcomingBills from "@/components/UpcomingBills";
+import InstallmentTracker from "@/components/InstallmentTracker";
 
 export default function DashboardPage() {
     const [viewDate, setViewDate] = useState<Date>(new Date());
@@ -134,6 +135,11 @@ export default function DashboardPage() {
                     <CardUI>
                         <CardHeader className="pb-2"><CardTitle>Card Performance</CardTitle></CardHeader>
                         <CardContent className="h-auto p-0 px-4 pb-4"><CardUsageStatus period={period} /></CardContent>
+                    </CardUI>
+
+                    <CardUI>
+                        <CardHeader className="pb-2"><CardTitle>Installments (할부 현황)</CardTitle></CardHeader>
+                        <CardContent className="h-auto p-0 px-4 pb-4"><InstallmentTracker /></CardContent>
                     </CardUI>
                 </div>
             </div>

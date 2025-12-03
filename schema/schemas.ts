@@ -44,3 +44,14 @@ export const CategoryRule = z.object({
 });
 
 export type CategoryRuleType = z.infer<typeof CategoryRule>;
+
+export const Installment = z.object({
+    id: z.uuid(),
+    startDate: z.coerce.date(),     // 할부 시작일 (결제일)
+    merchant: z.string(),           // 사용처
+    card_id: z.string(),            // 카드 ID
+    totalAmount: z.number().int(),  // 할부 원금 총액
+    months: z.number().int().min(2),// 할부 개월 수 (최소 2개월)
+});
+
+export type InstallmentType = z.infer<typeof Installment>;
