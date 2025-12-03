@@ -108,13 +108,12 @@ export default function DashboardPage() {
                         <CardContent className="h-auto p-0 px-4 pb-4"><FixedExpenses period={period} /></CardContent>
                     </CardUI>
 
-                    {/* [New] 전월 대비 비교 */}
                     <CardUI>
                         <CardHeader className="pb-2"><CardTitle>MoM Changes (전월 대비)</CardTitle></CardHeader>
                         <CardContent className="h-auto p-0 px-4 pb-4"><CategoryComparison period={period} /></CardContent>
                     </CardUI>
 
-                    <CardUI className="border-indigo-100 dark:border-indigo-900 bg-indigo-50/20">
+                    <CardUI>
                         <CardHeader className="pb-2"><CardTitle>Upcoming Bills (예정)</CardTitle></CardHeader>
                         <CardContent className="h-auto p-0 px-4 pb-4"><UpcomingBills period={period} /></CardContent>
                     </CardUI>
@@ -122,13 +121,6 @@ export default function DashboardPage() {
 
                 {/* --- Right Column --- */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-4">
-                    {/* [New] 시간대별 패턴 (시각적 요소이므로 상단 배치 추천) */}
-                    <CardUI>
-                        <CardHeader className="pb-2"><CardTitle>Hourly Spending</CardTitle></CardHeader>
-                        <CardContent className="h-auto px-4 pb-4"><HourlySpendingPattern period={period} /></CardContent>
-                    </CardUI>
-
-                    {/* [New] 고액 지출 */}
                     <CardUI>
                         <CardHeader className="pb-2"><CardTitle>High Value Transactions</CardTitle></CardHeader>
                         <CardContent className="h-auto p-0 px-4 pb-4"><HighValueTransactions period={period} /></CardContent>
